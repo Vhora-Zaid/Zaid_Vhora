@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Price Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Stock Price Prediction</h1>
+    <form id="prediction-form">
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required>
+        <label for="features">Features:</label>
+        <input type="text" id="features" name="features" required>
+        <button type="submit">Predict</button>
+    </form>
+    <h2>Prediction: <span id="prediction"></span></h2>
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const date = document.getElementById('date').value;
+            const features = document.getElementById('features').value.split(',').map(Number);
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ date, features })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('prediction').textContent = data.prediction;
+            });
+        });
+    </script>
+</body>
+</html>
